@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: pgsql-dv
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: Energizer1645!
+      POSTGRES_USER: Byron
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgsql-dv:/var/lib/postgresql/data
+volumes:
+  pgsql-dv:
