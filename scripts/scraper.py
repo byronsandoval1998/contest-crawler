@@ -29,11 +29,11 @@ for item in names:
     import psycopg2
 
     conn = psycopg2.connect(
-                dbname="crawler_db",
-                user="dev",
-                password="Energizer2048!",
-                host="192.168.50.193",
-                port="5432"
+                dbname='DATABASE_NAME',
+                user='USER',
+                password='PASS',
+                host='HOS',
+                port='POR'
             )
 
     cursor = conn.cursor()
