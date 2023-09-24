@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const UpdateContestsButton = ({onClick}) => {
+const UpdateFavoritesButton = ({onFavoriteAdded}) => {
+   // State to control whether to show the Contests component
+  
   const handleButtonClick = async () => {
     try {
-      const pythonScriptPath = '/Users/Byron/Desktop/contest-crawler/contests/scripts/crawl.py';
+      // Replace with the actual path to your Python script
+      const pythonScriptPath = '/Users/Byron/Desktop/contest-crawler/contests/scripts/fav.py';
 
       const response = await fetch('/api/executePythonScript', {
         method: 'POST',
@@ -14,10 +17,10 @@ const UpdateContestsButton = ({onClick}) => {
       });
 
       if (response.ok) {
-        
-        console.log("Data has been updated.")
-        onClick();
+        console.log("Python script ran successfully.");
         // Log the response message
+        onFavoriteAdded();
+        
       } else {
         console.error('Error executing Python script.');
       }
@@ -26,14 +29,14 @@ const UpdateContestsButton = ({onClick}) => {
     }
   };
 
+
   return (
-    <div class="m-20">
+    <div className="m-20">
       <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleButtonClick}>
-        Update Contests List
+        Update Favorites List
       </button>
-      
     </div>
   );
 };
 
-export default UpdateContestsButton;
+export default UpdateFavoritesButton;

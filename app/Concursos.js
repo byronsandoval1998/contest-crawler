@@ -1,40 +1,85 @@
 import React, { useEffect, useState } from 'react';
 
-const Concursos = () => {
-  const [data, setData] = useState([]);
-  let d = []
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/db/fetchData');
-        const jsonData = await response.json();
-        console.log(jsonData);
-        // Format the date to remove the timestamp
-        const formattedData = jsonData.map((item) => ({
-            ...item,
-            posted_date: formatDate(item.posted_date),
-          }));
+const Concursos = ({ onFavoriteAdded }) => {
+  const[data, setData] = useState([]);
+    let d = []
   
-        setData(formattedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('/api/db/fetchData');
+          const jsonData = await response.json();
+          
+
+          // Format the date to remove the timestamp
+          const formattedData = jsonData.map((item) => ({
+              ...item,
+              posted_date: formatDate(item.posted_date),
+            }));
+
+          formattedData.sort((a, b) => new Date(a.posted_date) - new Date(b.posted_date));
+    
+          setData(formattedData);
+          
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
+    // Function to format the date as 'YYYY-MM-DD'
+    const formatDate = (datetimeString) => {
+      const date = new Date(datetimeString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     };
 
-    fetchData();
-  }, []);
 
-  // Function to format the date as 'YYYY-MM-DD'
-  const formatDate = (datetimeString) => {
-    const date = new Date(datetimeString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const handleButtonClick = async (item) => {
+   
+    try {
+
+      const formattedDate = new Date(item.posted_date).toISOString();
+
+      const response = await fetch('/api/db/postFav', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: item.id, // Use item.id as user_id
+          title: item.title,
+          pdate: formattedDate,
+          link: item.link,
+        }),
+      });
+
+      
+  
+      // Handle the response as needed
+      if (response.ok) {
+        console.log('Success: The item was added to favorites');
+
+        
+
+        setData((prevData) => prevData.filter((ConcursoItem) => ConcursoItem.id !== item.id));
+        
+        onFavoriteAdded();
+      } else {
+        // Handle errors, e.g., show an error message to the user
+        console.error('Error adding to favorites');
+      }
+    } catch (error) {
+      console.error('Could not add:', error);
+    }
   };
-
-
+  
+  
 
   return (
     <div>
@@ -43,6 +88,7 @@ const Concursos = () => {
         {data.map((item) => (
           <li key={item.id} class="mb-4"><a href={item.link} target="_blank">{item.title}</a>
           <p class="text-gray-400">Deadline: {item.posted_date}</p><button
+          onClick={() => handleButtonClick(item)}
           type="button"
           data-te-ripple-init
           data-te-ripple-color="light"

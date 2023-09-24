@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,22 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id String @default(cuid()) @id
-  name String?
-  link String @unique
-}
-
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model entry {
-  id String @id
-  title String
-  release DateTime?
-  link String
+  id      String   @unique(map: "unique_id_constraint")
+  release DateTime? @db.Date
+  title   String?
+  link    String?
+
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model concursos {
-  id  String @id
-  posted_date DateTime?
-  title String
-  link String
+  id          String   @unique(map: "unique_id")
+  posted_date DateTime? @db.Date
+  title       String?
+  link        String?
+
+}
+
+model favorite {
+  user_id String    @id @default(dbgenerated("nextval('favorite_user_id_seq'::regclass)"))
+  title   String?
+  pdate   DateTime? @db.Date
+  link    String?
+}
+
+model favista {
+  user_id String    @id @default(dbgenerated("nextval('favorite_user_id_seq'::regclass)"))
+  title   String?
+  pdate   DateTime? @db.Date
+  link    String?
 }

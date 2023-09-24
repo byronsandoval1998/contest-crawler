@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const Concursos = () => {
+const Contests = ({keyProp, onFavoriteAdded}) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -8,13 +8,16 @@ const Concursos = () => {
       try {
         const response = await fetch('/api/db/fetchSecondData');
         const jsonData = await response.json();
-        console.log(jsonData);
 
+        jsonData.sort((a,b) => b.release - a.release)
+        
         // Format the date to remove the timestamp
         const formattedData = jsonData.map((item) => ({
           ...item,
           release: formatDate(item.release),
         }));
+
+      formattedData.sort((a, b) => new Date(a.release) - new Date(b.release));
 
         setData(formattedData);
       } catch (error) {
@@ -23,7 +26,7 @@ const Concursos = () => {
     };
 
     fetchData();
-  }, []);
+  }, [keyProp]);
 
   // Function to format the date as 'YYYY-MM-DD'
   const formatDate = (datetimeString) => {
@@ -34,6 +37,37 @@ const Concursos = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const handleButtonClick = async (item) => {
+    try {
+      const formattedDate = new Date(item.release).toISOString();
+      const response = await fetch('/api/db/postFav', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: item.id,
+          title: item.title,
+          pdate: formattedDate,
+          link: item.link,
+        }),
+      });
+  
+      // Handle the response as needed
+      if (response.ok) {
+        console.log('Success: The item was added to favorites');
+        setData((prevData) => prevData.filter((ContestItem) => ContestItem.id !== item.id));
+        onFavoriteAdded();
+      } else {
+        // Handle errors, e.g., show an error message to the user
+        console.error('Error adding to favorites');
+      }
+    } catch (error) {
+      console.error('Could not add:', error);
+    }
+  };
+
+
   return (
     <div>
       <h1 class="font-semibold text-xl tracking-tight m-8">Contests</h1>
@@ -42,7 +76,8 @@ const Concursos = () => {
           <li key={item.id} class="mb-4">
             <a href={item.link} target="_blank" class="">{item.title}</a>
             <p class="text-gray-400">Deadline: {item.release}</p>
-            <button
+        <button
+          onClick={() => handleButtonClick(item)}
           type="button"
           data-te-ripple-init
           data-te-ripple-color="light"
@@ -58,4 +93,4 @@ const Concursos = () => {
   );
 };
 
-export default Concursos;
+export default Contests;
