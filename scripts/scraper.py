@@ -47,7 +47,3 @@ for item in names:
     conn.close()
 
 print("Crawling " + url + " complete.")
-
-#this will be used towards the display of the database. This has to be stored
-#it needs to be updated daily so it can be stored or updated via button
-#add graphical interface later.

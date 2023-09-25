@@ -32,3 +32,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+This app is intended to crawl two websites and save item's information into a database that is accessible by the user. You can see the crawling in the scripts. You can see the api implementations to fetch multiple data in pages/api. You can use your own database just look for prisma nextjs information on database configuration. You would have to configure your own .env.local in the scripts directory for the information on how to connect to your database.
