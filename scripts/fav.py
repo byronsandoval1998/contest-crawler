@@ -1,12 +1,14 @@
 import psycopg2
+import os
+
 try:
 
     conn = psycopg2.connect(
-                dbname='DATABASE_NAME',
-                user='USER',
-                password='PASS',
-                host='HOS',
-                port='POR'
+                dbname=os.getenv('DATABASE_NAME'),
+                user=os.getenv('USER'),
+                password=os.getenv('PASS'),
+                host=os.getenv('HOS'),
+                port=os.getenv('POR')
             )
 
     create_view_sql = """

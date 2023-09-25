@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
 from dateutil.parser import parse
+import os
 
 
 # Initialize your starting URL
@@ -52,11 +52,11 @@ while url_queue and crawled_pages < max_pages_to_crawl:
             import psycopg2
 
             conn = psycopg2.connect(
-                dbname='DATABASE_NAME',
-                user='USER',
-                password='PASS',
-                host='HOS',
-                port='POR'
+                dbname=os.getenv('DATABASE_NAME'),
+                user=os.getenv('USER'),
+                password=os.getenv('PASS'),
+                host=os.getenv('HOS'),
+                port=os.getenv('POR')
             )
 
             cursor = conn.cursor()

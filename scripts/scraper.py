@@ -2,9 +2,9 @@
 #- Need to add the Poets and writers scrapping, will do it in another .py file
 from bs4 import BeautifulSoup
 import requests
-import re
 from datetime import datetime
 import uuid
+import os
 
 url = "https://www.escritores.org/concursos/concursos-1/concursos-cuento-relato"
 response = requests.get(url)
@@ -29,11 +29,11 @@ for item in names:
     import psycopg2
 
     conn = psycopg2.connect(
-                dbname='DATABASE_NAME',
-                user='USER',
-                password='PASS',
-                host='HOS',
-                port='POR'
+                dbname=os.getenv('DATABASE_NAME'),
+                user=os.getenv('USER'),
+                password=os.getenv('PASS'),
+                host=os.getenv('HOS'),
+                port=os.getenv('POR')
             )
 
     cursor = conn.cursor()
